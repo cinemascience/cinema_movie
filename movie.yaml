@@ -1,0 +1,10 @@
+---
+# cinema_move configuration file
+
+cdb_name : mpas_static.cdb
+frame_var : timestep
+frame_rate : 5.0   # number of frames per second
+missingFILE_img : cinemaNoFILE.png
+movie_name : './mpas_static.mp4'
+
+...
