@@ -9,6 +9,10 @@ import numpy as np
 import pandas as pd
 import os, sys
 import yaml
+import cmovie
+
+
+cmovie.core.hello()
 
 ### Setup ####
 
