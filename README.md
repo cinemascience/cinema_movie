@@ -18,7 +18,7 @@ Usage:
 Edit the movie.yaml file to point to the CDB, adjust the name of the output movie, choose movie frame rate, and choose the variable along which to make the movie.    
 
 ```
-$ python simple_movie.py
+$ ./simple_movie
 ```
 
 # In Progress:
