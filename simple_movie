@@ -3,22 +3,18 @@
 # Code to take in a Cinema database and make a movie from it.
 #
 # Developer: Terry Turton, Los Alamos National Laboratory
+# Developer: David H. Rogers, Los Alamos National Laboratory
 #
 
 import cv2
 import numpy as np
 import pandas as pd
 import os, sys
-import yaml
 import cmovie
 
-
 cmovie.core.hello()
+movie_params = cmovie.core.get_params()
 
-### Setup ####
-
-with open(r'movie.yaml') as file:
-    movie_params = yaml.full_load(file)
 
 # Read in data.csv and sort by column of interest
 pathIn = './data/' + movie_params.get("cdb_name") + '/'
