@@ -5,7 +5,7 @@ import sys
 
 ################## Greet users #################################
 def hello():
-    sys.stdout.write ('{}\n'.format("welcome to cinema_movie") )
+    sys.stdout.write ('{}\n'.format("let's make a cinema_movie") )
 
 ################## Get parameters for movie ####################
 def get_params(file = 'movie.yaml'):

@@ -12,17 +12,22 @@ import pandas as pd
 import os, sys
 import cmovie
 
+# Read in yaml params as dictionary
 cmovie.core.hello()
 movie_params = cmovie.core.get_params()
-
+#print (movie_params)
 
 # Read in data.csv and sort by column of interest
-pathIn = './data/' + movie_params.get("cdb_name") + '/'
+pathIn = movie_params.get("cdb_path") + movie_params.get("cdb_name") + '/'
 csv_filename = pathIn + 'data.csv'
 
 dfCDB = pd.read_csv(csv_filename, sep=',')
-cdbCols = list(dfCDB.columns)
 
+# Select only those rows in the data.csv dataframe which match the view requested
+myviews = movie_params.get ("views")  #
+print ('View Requested:' , myviews)
+for x in myviews:
+    dfCDB = dfCDB[dfCDB[x]==myviews.get(x)]
 
 control_var = movie_params.get("frame_var")
 sys.stdout.write ( 'Control Variable: {}\n'.format(control_var))
@@ -33,10 +38,12 @@ fps = movie_params.get("frame_rate")
 
 frame_array = []
 files = dfCDB['FILE'].to_numpy()
+print (pathIn, files)
 
 for i in range(len(files)):
     filename = pathIn + files[i]
     img = cv2.imread(filename)
+    print (filename, img.shape)
     height, width, layers = img.shape
     size = (width,height)
     #inserting the frames into an image array
