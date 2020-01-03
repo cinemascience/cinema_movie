@@ -38,16 +38,17 @@ fps = movie_params.get("frame_rate")
 
 frame_array = []
 files = dfCDB['FILE'].to_numpy()
-print (pathIn, files)
 
 for i in range(len(files)):
     filename = pathIn + files[i]
     img = cv2.imread(filename)
-    print (filename, img.shape)
-    height, width, layers = img.shape
-    size = (width,height)
-    #inserting the frames into an image array
-    frame_array.append(img)
+    if img is not None:
+        height, width, layers = img.shape
+        size = (width,height)
+        #inserting the frames into an image array
+        frame_array.append(img)
+    else :
+        sys.stderr.write ( 'WARNING skipping missing image: {}\n'.format(filename))
 
 out = cv2.VideoWriter(outputMovie, cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
 

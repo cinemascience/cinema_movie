@@ -2,17 +2,17 @@
 # cinema_move configuration file
 
 # Cinema Database information
-cdb_path : './tmp/'
+cdb_path : ./tmp/
 cdb_name : mpas_10timesteps.cdb
-
-missingFILE_img : cinemaNoFILE.png
 
 # Output movie information
 frame_var : time
 frame_rate : 5.0   # number of frames per second
-movie_name : 'mpas.mp4'
+movie_name : mpas.mp4
 
 # sets of params and values to define movie
+# these should be in order of sorting importance
+#
 views :
   phi   : -180
   theta : 0
