@@ -22,6 +22,6 @@ Edit the movie.yaml file to point to the CDB, adjust the name of the output movi
 $ ./simple_movie
 ```
 
-# In Progress:
+# To Do:
 
-Development of more complex scripts to make and direct a movie along multiple axis (e.g., multiple views) is underway.  
+- Development of more complex scripts to make and direct a movie along multiple axes (e.g., multiple views).

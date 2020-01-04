@@ -17,9 +17,9 @@ def get_params(file = 'movie.yaml'):
             sys.stderr.write ('YAML file error: {}\n'.format(exc))
 
 ################## Make the movie ####################
-def output_movie(name, fps, path, df) :
+def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
-    files = df['FILE'].to_numpy()
+    files = df[whichFILE].to_numpy()
 
     for i in range(len(files)):
         filename = path + files[i]
