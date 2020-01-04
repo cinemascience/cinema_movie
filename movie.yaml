@@ -2,16 +2,15 @@
 # cinema_move configuration file
 
 # Cinema Database information
-cdb_path : ./tmp/
-cdb_name : mpas_10timesteps.cdb
+cdb_path : ./data/
+cdb_name : mpas_static.cdb
 
 # Output movie information
-frame_var : time
-frame_rate : 5.0   # number of frames per second
-movie_name : mpas.mp4
+frame_var : time         # primary control variable along which movie is made; typically time
+frame_rate : 5.0         # number of frames per second
+movie_name : cinema.mp4  # name of output movie
 
-# sets of params and values to define movie
-# these should be in order of sorting importance
+# Variables to define static view used in the movie
 #
 views :
   phi   : -180

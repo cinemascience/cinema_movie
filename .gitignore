@@ -1,6 +1,8 @@
 .DS_Store
 tmp/
 *.mp4
+temp.py
+temp.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
