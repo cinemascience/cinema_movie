@@ -6,14 +6,13 @@ cdb_path : ./tmp/
 cdb_name : mpas_10timesteps.cdb
 
 # Output movie information
-frame_var : time         # primary control variable along which movie is made; typically time
 frame_rate : 5.0         # number of frames per second
 movie_name : cinema.mp4  # name of output movie
-FILE_choice: FILE        # which FILE* column of images to use in making movie
 
-# Variables to define static view used in the movie
-#
-views :
+# Variables to define image column and the static view to be used for the movie
+frame_var   : time    # primary control variable along which movie is made; typically time
+FILE_choice : FILE        # which FILE* column of images to use in making movie
+views :                   # specific variables that define requested view.  If static CDB, delete below list
   phi   : -180
   theta : 0
 ...

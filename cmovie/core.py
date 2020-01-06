@@ -1,7 +1,7 @@
 # Tools for cinema_movie application
 
 import yaml
-import sys
+import os, sys
 import cv2
 
 ################## Greet users #################################
@@ -16,7 +16,39 @@ def get_params(file = 'movie.yaml'):
         except yaml.YAMLError as exc:
             sys.stderr.write ('YAML file error: {}\n'.format(exc))
 
-################## Make the movie ####################
+################## Validate CDB path and filename ###############
+def validatePath(file) :
+    if ( not os.path.isfile(file) ) :
+        sys.stderr.write ( 'ERROR Cinema database does not exist: {}\n'.format(file) )
+        sys.exit("Check CDB path and name.")
+
+
+################## Validate yaml control variables ##############
+def validateCDB(var, file_choice, views, df) :
+    if var in list(df.columns.values) : # frame control variable exists
+        sys.stdout.write ( 'Using control variable: {}\n'.format(var))
+        if file_choice in list(df.columns.values) : # Image column exists
+            sys.stdout.write ( 'Using image column: {}\n'.format(file_choice))
+            if bool(views) : # View exists
+                for x in views:
+                    if x not in list(df.columns.values) :
+                        sys.stderr.write ('ERROR Requested view variable does not exist : {}\n'.format(x) )
+                        sys.exit ("Check view variable names.")
+                        
+                sys.stdout.write ('Using requested view: {}\n'.format(views))
+                return True
+            else:
+                sys.stdout.write ('WARNING No view specified, all images in database will go into the movie. \n'.format())
+        else :
+            sys.stderr.write ( 'ERROR Requested FILE image column does not exist : {}\n'.format(file_choice))
+            sys.exit("Check FILE image column name.")
+    else :
+        sys.stderr.write ( 'ERROR Requested frame control variable does not exist : {}\n'.format(var))
+        sys.exit("Check frame control variable name.")
+
+    return False
+
+################## Make the movie ##############################
 def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
     files = df[whichFILE].to_numpy()
@@ -37,3 +69,4 @@ def output_movie(name, fps, whichFILE, path, df) :
         out.write(fr_array[i])
 
     out.release()
+    sys.stdout.write ( 'Movie is in: {}\n'.format( name ))

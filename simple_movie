@@ -11,31 +11,29 @@ import pandas as pd
 import os, sys
 import cmovie
 
-# Read in yaml params as dictionary
+# Read in yaml params and validate
 cmovie.core.hello()
 movie_params = cmovie.core.get_params()
-#print (movie_params)
 
-# Read in data.csv and sort by column of interest
+# Read in data.csv as a dataframe
 pathIn = movie_params.get("cdb_path") + movie_params.get("cdb_name") + '/'
 csv_filename = pathIn + 'data.csv'
-
+cmovie.core.validatePath(csv_filename)
 dfCDB = pd.read_csv(csv_filename, sep=',')
-sys.stdout.write ('Using image column: {}\n'.format(movie_params.get("FILE_choice") ))
 
-# Select only those rows in the data.csv dataframe which match the view requested
-myviews = movie_params.get("views")
-if bool(myviews):
-    sys.stdout.write ('View Requested: {}\n'.format(myviews))
-
+# Validate the CDB; return value is
+#   false if it is a static CDB with no variables in the "views" variable
+#   true if there is a valid view requested
+notStatic = cmovie.core.validateCDB(movie_params.get("frame_var"), movie_params.get("FILE_choice"), movie_params.get("views"), dfCDB)
+if notStatic:   # Select only those rows which match the requested view
+    myviews = movie_params.get("views")
     for x in myviews:
         dfCDB = dfCDB[dfCDB[x]==myviews.get(x)]
-else :
-    sys.stdout.write ('No view specified, all images in database will go into the movie. \n'.format())
 
-control_var = movie_params.get("frame_var")
-sys.stdout.write ( 'Control Variable: {}\n'.format(control_var))
-dfCDB.sort_values(by=control_var, axis=0, ascending=True, inplace=True, kind='quicksort', na_position='last')
-
-cmovie.core.output_movie( movie_params.get("movie_name"), movie_params.get("frame_rate"), movie_params.get("FILE_choice"), pathIn, dfCDB)
-sys.stdout.write ( 'Movie is in: {}\n'.format( movie_params.get("movie_name") ))
+if len(dfCDB) > 0 :
+    # Sort by frame variable
+    dfCDB.sort_values(by=movie_params.get("frame_var"), axis=0, ascending=True, inplace=True, kind='quicksort', na_position='last')
+    # Make movie
+    cmovie.core.output_movie( movie_params.get("movie_name"), movie_params.get("frame_rate"), movie_params.get("FILE_choice"), pathIn, dfCDB)
+else:
+    sys.stdout.write ('ERROR No images satisfied the view criteria, please check movie.yaml parameters: {}\n'.format(myviews))
