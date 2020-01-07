@@ -23,7 +23,7 @@ The control file is used to point to the database and define the parameters to m
 ```
 # Path and database information
 cdb_path : ./data/
-cdb_name : example.cdb
+cdb_name : example_data.cdb
 
 # Output movie information
 frame_rate : 5.0         # number of frames per second
@@ -33,10 +33,10 @@ movie_name : cinema.mp4  # name of output movie
 frame_var   : time        # primary control variable along which movie is made; typically time
 FILE_choice : FILE        # which FILE* column of images to use in making movie
 views :
-  phi   : -180
+  phi   : -90
   theta : 0
 ```
-There are error checks on the path and database name and to verify the database columns that will be used in the movie.  If there are no images found that satisfy the requested movie parameters, an error message will print.  
+There are error checks on the path and database name and to verify the database columns that will be used in the movie.  If there are no images found that satisfy the requested movie parameters, a warning message will print.  
 
 ## Usage
 
@@ -47,7 +47,3 @@ Make a movie by running the script:
 ```
 $ ./simple_movie
 ```
-
-## To Do
-
-- Make a small example dataset.
