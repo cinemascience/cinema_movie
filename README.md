@@ -5,7 +5,7 @@ This repository is for python scripts used to make movies from Cinema databases.
 ## Requirements
 
 - python 3.7 or later
-- pyyaml, pandas, numpy installed
+- pyyaml, pandas, numpy, openCV-python installed
 
 ## Files
 
