@@ -29,13 +29,9 @@ desc = """A tool that creates simple movies from Cinema databases
 """
 ep = """
 Examples:
-    cm --arg --arg
+    csimple --fps 10 
 
-        This is an explanation of what happens
-
-    cm --anotherarg --anotherarg
-
-        This is an explanation of what happens
+        Set the frame rate for the movie 
 
 """
 parser = argparse.ArgumentParser(  
@@ -45,8 +41,8 @@ parser = argparse.ArgumentParser(
                     epilog=textwrap.dedent(ep)
                     )
 
-parser.add_argument( "--input", default=None,
-    help="location of the input cinema database")
+parser.add_argument( "--fps", default=5,
+    help="frames per second")
 
 args = parser.parse_args(remaining_argv)
 

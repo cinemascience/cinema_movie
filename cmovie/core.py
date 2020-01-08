@@ -53,8 +53,9 @@ def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
     files = df[whichFILE].to_numpy()
 
-    for i in range(len(files)):
-        filename = path + files[i]
+    # for i in range(len(files)):
+    for f in files:
+        filename = os.path.join(path, f)
         img = cv2.imread(filename)
         if img is not None:
             height, width, layers = img.shape
@@ -65,8 +66,10 @@ def output_movie(name, fps, whichFILE, path, df) :
             sys.stderr.write ( 'WARNING skipping missing image: {}\n'.format(filename))
 
     out = cv2.VideoWriter(name, cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
-    for i in range(len(fr_array)):
-        out.write(fr_array[i])
+    for f in fr_array:
+        out.write(f)
+    # for i in range(len(fr_array)):
+        # out.write(fr_array[i])
 
     out.release()
     sys.stdout.write ( 'Movie is in: {}\n'.format( name ))
