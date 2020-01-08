@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+
+# ---------------------------------------------------------------------------
+#
+# cm a cinema-based movie maker 
+#
+# ---------------------------------------------------------------------------
+
+import argparse
+import configparser
+import os
+import textwrap
+import cmovie
+
+ProgName = "cm"
+
+
+# ---------------------------------------------------------------------------
+# set up command line args
+# ---------------------------------------------------------------------------
+conf_parser = argparse.ArgumentParser(
+    # Turn off help, so we print all options in response to -h
+    add_help=False
+    )
+
+args, remaining_argv = conf_parser.parse_known_args()
+
+desc = """A tool that creates simple movies from Cinema databases 
+"""
+ep = """
+Examples:
+    cm --arg --arg
+
+        This is an explanation of what happens
+
+    cm --anotherarg --anotherarg
+
+        This is an explanation of what happens
+
+"""
+parser = argparse.ArgumentParser(  
+                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                    parents=[conf_parser],
+                    description=textwrap.dedent(desc), 
+                    epilog=textwrap.dedent(ep)
+                    )
+
+parser.add_argument( "--input", default=None,
+    help="location of the input cinema database")
+
+args = parser.parse_args(remaining_argv)
+
+
+# -----------------------------------------------------------------------------
+#
+# execute
+#
+# -----------------------------------------------------------------------------
+
+# set settings
+# example ...
+# cmovie.core.set_input(args.input)
+
+# check existence of the files we will need
+if not os.path.isfile(args.input):
+    print("ERROR: cannot open file: " + args.input) 
+    exit(0)
+
+# do everything
+
+if (True):
+    print("executing")
+
+else:
+    print("ERROR: cannot write output file of type \'{}\'".format(output_type))
+    exit(1)
+
+
