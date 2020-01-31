@@ -6,14 +6,72 @@
 # Developer: David H. Rogers, Los Alamos National Laboratory
 #
 
+import argparse
+import configparser
+import textwrap
 import numpy as np
 import pandas as pd
 import os, sys
 import cmovie
 
+ProgName = "cm"
+
+# ---------------------------------------------------------------------------
+# set up command line args
+# ---------------------------------------------------------------------------
+conf_parser = argparse.ArgumentParser(
+    # Turn off help, so we print all options in response to -h
+    add_help=False
+    )
+
+args, remaining_argv = conf_parser.parse_known_args()
+
+desc = """A tool that creates simple movies from Cinema databases
+"""
+ep = """
+Examples:
+    ./simple_movie --fps 10 --yaml "myyaml.yaml"
+
+        yaml:  Set yaml file name for movie control parameters
+        movie: Set output movie name
+        path:  Set input path to Cinema datbase
+        cdb:   Set input Cinema database name
+        csv:   Set input csv file name to choose views in the movie
+        fps:   Set the frame rate for the movie
+
+
+"""
+parser = argparse.ArgumentParser(
+                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                    parents=[conf_parser],
+                    description=textwrap.dedent(desc),
+                    epilog=textwrap.dedent(ep)
+                    )
+
+parser.add_argument( "--fps", default=5,
+    help="frames per second")
+parser.add_argument( "--yaml", default="movie.yaml",
+    help="yaml control file with movie parameters")
+parser.add_argument( "--movie", default="cinema.mp4",
+    help="output movie name")
+parser.add_argument( "--path", default="./data/",
+    help="input path to input Cinema database")
+parser.add_argument( "--cdb", default="cinema.cdb",
+    help="input cinema database")
+parser.add_argument( "--csv", default="views.csv",
+    help="input csv file of views to include in the movie")
+
+
+args = parser.parse_args(remaining_argv)
+print (args)
+#----------------------------------------------------------------------------
+
 # Read in yaml params and validate
 cmovie.core.hello()
 movie_params = cmovie.core.get_params()
+
+
+'''
 
 # Read in data.csv as a dataframe
 pathIn = movie_params.get("cdb_path") + movie_params.get("cdb_name") + '/'
@@ -37,3 +95,4 @@ if len(dfCDB) > 0 :
     cmovie.core.output_movie( movie_params.get("movie_name"), movie_params.get("frame_rate"), movie_params.get("FILE_choice"), pathIn, dfCDB)
 else:
     sys.stdout.write ('ERROR No images satisfied the view criteria, please check movie.yaml parameters: {}\n'.format(myviews))
+'''

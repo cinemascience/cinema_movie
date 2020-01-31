@@ -2,17 +2,16 @@
 # cinema_move configuration file
 
 # Cinema Database information
-cdb_path : ./data/
-cdb_name : example_data.cdb
+cdb_path : ./tmp/
+cdb_name : warpx_streamlines.cdb
 
 # Output movie information
 frame_rate : 5.0         # number of frames per second
-movie_name : cinema.mp4  # name of output movie
+movie_name : warpx.mp4  # name of output movie
 
 # Variables to define image column and the static view to be used for the movie
 frame_var   : time    # primary control variable along which movie is made; typically time
 FILE_choice : FILE        # which FILE* column of images to use in making movie
 views :                   # specific variables that define requested view.  If static CDB, delete below list
-  phi   : -90
   theta : 0
 ...

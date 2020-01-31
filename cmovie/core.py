@@ -34,7 +34,7 @@ def validateCDB(var, file_choice, views, df) :
                     if x not in list(df.columns.values) :
                         sys.stderr.write ('ERROR Requested view variable does not exist : {}\n'.format(x) )
                         sys.exit ("Check view variable names.")
-                        
+
                 sys.stdout.write ('Using requested view: {}\n'.format(views))
                 return True
             else:
@@ -52,7 +52,8 @@ def validateCDB(var, file_choice, views, df) :
 def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
     files = df[whichFILE].to_numpy()
-
+    size = (0,0)
+    
     # for i in range(len(files)):
     for f in files:
         filename = os.path.join(path, f)
