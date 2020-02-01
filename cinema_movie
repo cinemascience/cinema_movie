@@ -30,7 +30,7 @@ desc = """A tool that creates simple movies from Cinema databases
 """
 ep = """
 Examples:
-    ./simple_movie --fps 10 --cdb "my.cdb"
+    ./cinema_movie --fps 10 --cdb "my.cdb"
 
         path:   Set input path to Cinema datbase (default: ./data/)
         cdb:    Set input Cinema database name (default: example_data.cdb)
@@ -47,7 +47,7 @@ parser = argparse.ArgumentParser(
                     epilog=textwrap.dedent(ep)
                     )
 
-parser.add_argument( "--path", default="./data/",
+parser.add_argument( "--path", default="./data",
     help="path to input Cinema database")
 parser.add_argument( "--cdb", default="example_data.cdb",
     help="input cinema database")
@@ -64,12 +64,12 @@ args = parser.parse_args(remaining_argv)
 
 #----------------------------------------------------------------------------
 
-# Read in yaml params and validate
 cmovie.core.hello()
 
 # Read in data.csv and the frame csv files as dataframes; validate path and dfs
-pathIn = args.path + args.cdb + '/'
+pathIn = args.path + '/' + args.cdb + '/'
 FILE_choice = args.FILE
+FPS = cmovie.core.checkFPS(args.fps)
 
 data_csv_file = pathIn + 'data.csv'
 frames_file = './' + args.frames
@@ -82,6 +82,6 @@ cmovie.core.validateDFs(dfCDB, dfFrames, FILE_choice)
 dfMovie = pd.merge(dfCDB, dfFrames, on=list(dfFrames.columns), how='inner')
 
 if len(dfMovie) > 0 :    # Make movie
-    cmovie.core.output_movie( args.movie, args.fps, FILE_choice, pathIn, dfMovie)
+    cmovie.core.output_movie( args.movie, FPS, FILE_choice, pathIn, dfMovie)
 else:
     sys.stdout.write ('ERROR No images satisfied the view criteria' )
