@@ -13,12 +13,12 @@ def validateFile(file) :
         sys.stderr.write ( 'ERROR file does not exist: {}\n'.format(file) )
         sys.exit("Check file path and name.")
 
-################## Check if fps is string or int and set to int #####
+################## Check and set fps to float ##############
 def checkFPS(fps) :
-    if isinstance(fps, str) :
-        return int(fps)
-    else :
-        return fps
+    if not isinstance(fps, float) :
+        fps = float(fps)
+
+    return fps
 
 ################## Validate DFs and variables ##############
 def validateDFs(dfcdb, dfframes, file_choice) :
@@ -45,19 +45,15 @@ def validateDFs(dfcdb, dfframes, file_choice) :
 def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
     files = df[whichFILE].to_numpy()
-
-    # determine size from first image:
-    filename = os.path.join(path, files[0])
-    img = cv2.imread(filename)
-    if img is not None:
-        height, width, layers = img.shape
-        size = (width,height)
+    size = (0,0)
 
     # for i in range(len(files)):
     for f in files:
         filename = os.path.join(path, f)
         img = cv2.imread(filename)
         if img is not None: #insert the frames into an image array
+            height, width, layers = img.shape
+            size = (width,height)
             fr_array.append(img)
         else :
             sys.stderr.write ( 'WARNING skipping missing image: {}\n'.format(filename))
