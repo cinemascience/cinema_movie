@@ -1,6 +1,5 @@
 # Tools for cinema_movie application
 
-import yaml
 import os, sys
 import cv2
 
@@ -8,43 +7,30 @@ import cv2
 def hello():
     sys.stdout.write ('{}\n'.format("Let's make a Cinema movie") )
 
-################## Get parameters for movie ####################
-def get_params(file = 'movie.yaml'):
-    with open(file, 'r') as file:
-        try:
-            return yaml.full_load(file)
-        except yaml.YAMLError as exc:
-            sys.stderr.write ('YAML file error: {}\n'.format(exc))
-
-################## Validate CDB path and filename ###############
-def validatePath(file) :
+################## Validate path and filename ###############
+def validateFile(file) :
     if ( not os.path.isfile(file) ) :
-        sys.stderr.write ( 'ERROR Cinema database does not exist: {}\n'.format(file) )
-        sys.exit("Check CDB path and name.")
+        sys.stderr.write ( 'ERROR file does not exist: {}\n'.format(file) )
+        sys.exit("Check file path and name.")
 
+################## Validate DFs and variables ##############
+def validateDFs(dfcdb, dfframes, file_choice) :
 
-################## Validate yaml control variables ##############
-def validateCDB(var, file_choice, views, df) :
-    if var in list(df.columns.values) : # frame control variable exists
-        sys.stdout.write ( 'Using control variable: {}\n'.format(var))
-        if file_choice in list(df.columns.values) : # Image column exists
-            sys.stdout.write ( 'Using image column: {}\n'.format(file_choice))
-            if bool(views) : # View exists
-                for x in views:
-                    if x not in list(df.columns.values) :
-                        sys.stderr.write ('ERROR Requested view variable does not exist : {}\n'.format(x) )
-                        sys.exit ("Check view variable names.")
-
-                sys.stdout.write ('Using requested view: {}\n'.format(views))
-                return True
-            else:
-                sys.stdout.write ('WARNING No view specified, all images in database will go into the movie. \n'.format())
+    if file_choice in list(dfcdb.columns.values) : # Image column exists
+        sys.stdout.write ( 'Using image column: {}\n'.format(file_choice))
+        colCDB = list(dfcdb.columns)
+        colFrames = list(dfframes.columns)
+        if(all(x in colCDB for x in colFrames)):
+            sys.stdout.write ('Making movie over: {}\n'.format(colFrames))
+            return True
         else :
-            sys.stderr.write ( 'ERROR Requested FILE image column does not exist : {}\n'.format(file_choice))
-            sys.exit("Check FILE image column name.")
+            sys.stderr.write ( 'ERROR Some requested variables do not exist in Cinema database: \n')
+            sys.stderr.write ( 'Columns in Cinema database: {} \n'.format(colCDB))
+            sys.stderr.write ( 'Columns in frames file:     {} \n'.format(colFrames))
+            sys.exit("Check columns in your frames CSV file.")
     else :
-        sys.stderr.write ( 'ERROR Requested frame control variable does not exist : {}\n'.format(var))
-        sys.exit("Check frame control variable name.")
+        sys.stderr.write ( 'ERROR Requested FILE image column does not exist : {}\n'.format(file_choice))
+        sys.exit("Check FILE image column name.")
 
     return False
 
@@ -53,7 +39,7 @@ def output_movie(name, fps, whichFILE, path, df) :
     fr_array = []
     files = df[whichFILE].to_numpy()
     size = (0,0)
-    
+
     # for i in range(len(files)):
     for f in files:
         filename = os.path.join(path, f)

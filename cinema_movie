@@ -32,12 +32,12 @@ ep = """
 Examples:
     ./simple_movie --fps 10 --cdb "my.cdb"
 
-        movie: Set output movie name
-        path:  Set input path to Cinema datbase
-        cdb:   Set input Cinema database name
-        views  Set input csv file name to choose views in the movie
-        fps:   Set the frame rate for the movie
-
+        path:   Set input path to Cinema datbase (default: ./data/)
+        cdb:    Set input Cinema database name (default: example_data.cdb)
+        frames: Set input csv file name to choose views in the movie; assumes ./ path (default: frames.csv)
+        FILE:   Set the image column used from the CDB (default: FILE)
+        fps:    Set the frame rate for the movie (default: 5 fps)
+        movie:  Set output movie name (default: cinema.mp4)
 
 """
 parser = argparse.ArgumentParser(
@@ -47,18 +47,18 @@ parser = argparse.ArgumentParser(
                     epilog=textwrap.dedent(ep)
                     )
 
+parser.add_argument( "--path", default="./data/",
+    help="path to input Cinema database")
+parser.add_argument( "--cdb", default="example_data.cdb",
+    help="input cinema database")
+parser.add_argument( "--frames", default="frames.csv",
+    help="input csv file of frames (images) to be included in the movie; assumed to be in ./ ")
+parser.add_argument( "--FILE", default="FILE",
+    help="defines which image column will be used in the movie")
 parser.add_argument( "--fps", default=5,
     help="frames per second")
 parser.add_argument( "--movie", default="cinema.mp4",
     help="output movie name")
-parser.add_argument( "--path", default="./data/",
-    help="input path to input Cinema database")
-parser.add_argument( "--cdb", default="example_data.cdb",
-    help="input cinema database")
-parser.add_argument( "--frames", default="frames.csv",
-    help="input csv file of frames (images) to be included in the movie")
-parser.add_argument( "--images", default="FILE",
-    help="defines which image column will be used in the movie")
 
 args = parser.parse_args(remaining_argv)
 
@@ -67,47 +67,21 @@ args = parser.parse_args(remaining_argv)
 # Read in yaml params and validate
 cmovie.core.hello()
 
-# Read in data.csv as a dataframe
+# Read in data.csv and the frame csv files as dataframes; validate path and dfs
 pathIn = args.path + args.cdb + '/'
-frame_var = "time"
-FILE_choice = args.images
+FILE_choice = args.FILE
 
 data_csv_file = pathIn + 'data.csv'
-cmovie.core.validatePath(data_csv_file)
+frames_file = './' + args.frames
+cmovie.core.validateFile(data_csv_file)
+cmovie.core.validateFile(frames_file)
+
 dfCDB = pd.read_csv(data_csv_file, sep=',')
-dfFrames = pd.read_csv(args.frames, sep=',')
+dfFrames = pd.read_csv(frames_file, sep=',')
+cmovie.core.validateDFs(dfCDB, dfFrames, FILE_choice)
+dfMovie = pd.merge(dfCDB, dfFrames, on=list(dfFrames.columns), how='inner')
 
-#colFrames = list(dfFrames.columns)
-#colFrames.append(args.images)
-#df = dfCDB[colFrames]  # orders by list of columns in frames.csv
-
-dfmerged = pd.merge(dfCDB, dfFrames, left_on=list(dfFrames.columns), right_on=list(dfFrames.columns), how='inner')
-dfmerged = pd.merge(dfCDB, dfFrames, on=list(dfFrames.columns), how='inner')
-print (list(dfmerged.columns))
-print (dfmerged)
-
-# TODO:
-# Get rid of all yaml and movie_params stuff
-# Update validation routine
-# Figure out error checks
-
-'''
-
-# Validate the CDB; return value is
-#   false if it is a static CDB with no variables in the "views" variable
-#   true if there is a valid view requested
-notStatic = cmovie.core.validateCDB(movie_params.get("frame_var"), movie_params.get("FILE_choice"), movie_params.get("views"), dfCDB)
-if notStatic:   # Select only those rows which match the requested view
-    myviews = movie_params.get("views")
-    for x in myviews:
-        dfCDB = dfCDB[dfCDB[x]==myviews.get(x)]
-
-'''
-
-if len(dfCDB) > 0 :
-    # Sort by frame variable
-    dfCDB.sort_values(by=frame_var, axis=0, ascending=True, inplace=True, kind='quicksort', na_position='last')
-    # Make movie
-    cmovie.core.output_movie( args.movie, args.fps, FILE_choice, pathIn, dfmerged)
+if len(dfMovie) > 0 :    # Make movie
+    cmovie.core.output_movie( args.movie, args.fps, FILE_choice, pathIn, dfMovie)
 else:
     sys.stdout.write ('ERROR No images satisfied the view criteria' )
