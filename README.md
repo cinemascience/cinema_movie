@@ -11,7 +11,6 @@ This repository is for python scripts used to make movies from Cinema databases.
 
 ```
 cinema_movie - main program
-movie.yaml - control file
 cmovie - movie production module
 ```
 
@@ -43,4 +42,4 @@ Make a movie by running the script with optional command arguments
 ```
 
 ### Note on fps:
-Occasionally the movie will be generated without error and the images will appear correctly for some fps values, but the images will not appear correctly for other fps values.  This phenomenon is not yet understood.  
+Occasionally the movie will be generated without error and the images will appear correctly for some fps values, but the images will not appear correctly for other fps values.   Example: for the example_data.cdb, fps=2 produces a movie with images that have obvious color errors.  This phenomenon is not yet understood. 
