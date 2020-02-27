@@ -20,15 +20,16 @@ The **cinema_movie** script takes in a Cinema database (CDB) and creates a movie
 The control parameters are given as options on the command line:
 
 ```
-    path:   Set input path to Cinema datbase (default: ./data)
-    cdb:    Set input Cinema database name (default: example_data.cdb)
-    frames: Set input csv file name to choose views in the movie; assumes ./ path (default: frames.csv)
-    FILE:   Set the image column used from the CDB (default: FILE)
-    fps:    Set the frame rate for the movie (default: 5 fps)
-    movie:  Set output movie name (default: cinema.mp4)
+  cdb:    Set input path and Cinema database name (default: ./data/example_data.cdb)
+  frames: Set input csv file name to choose views in the movie; assumes path is cdb (default: ./data/example_data.cdb/frames.csv)
+  FILE:   Set the image column used from the CDB (default: FILE)
+  fps:    Set the frame rate for the movie (default: 5 fps)
+  opath:  Set/creates path to output movie (default: ./)
+  movie:  Set output movie name (default: cinema.mp4)
+
 ```
 
-There are error checks on the path, the Cinema database name, the frames.csv file and to verify the columns that will be used in the movie.  If there are no images found that satisfy the requested movie parameters, a warning message will print.  
+There are error checks on the path, the Cinema database name, the frames.csv file and to verify the columns that will be used in the movie.  If the output movie path does not exist, it will be created.  If there are no images found that satisfy the requested movie parameters, a warning message will print.  
 
 ## Usage
 
@@ -41,5 +42,9 @@ Make a movie by running the script with optional command arguments
 
 ```
 
-### Note on fps:
-Occasionally the movie will be generated without error and the images will appear correctly for some fps values, but the images will not appear correctly for other fps values.   Example: for the example_data.cdb, fps=2 produces a movie with images that have obvious color errors.  This phenomenon is not yet understood. 
+### Note on fps
+Occasionally the movie will be generated without error and the images will appear correctly for some fps values, but the images will not appear correctly for other fps values.   Example: for the example_data.cdb, fps=2 produces a movie with images that have obvious color errors.  This phenomenon is not yet understood.
+
+### ToDo
+
+Need to set up the use case of a single view (defined by set of parameter values) going over all values of another parameter, e.g. over time.  

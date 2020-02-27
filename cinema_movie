@@ -30,13 +30,13 @@ desc = """A tool that creates simple movies from Cinema databases
 """
 ep = """
 Examples:
-    ./cinema_movie --fps 10 --cdb "my.cdb"
+    ./cinema_movie --fps 10 --cdb "/Users/mydir/my.cdb"
 
-        path:   Set input path to Cinema datbase (default: ./data/)
-        cdb:    Set input Cinema database name (default: example_data.cdb)
-        frames: Set input csv file name to choose views in the movie; assumes ./ path (default: frames.csv)
+        cdb:    Set input path and Cinema database name (default: ./data/example_data.cdb)
+        frames: Set input csv file name to choose views in the movie; assumes path is cdb (default: ./data/example_data.cdb/frames.csv)
         FILE:   Set the image column used from the CDB (default: FILE)
         fps:    Set the frame rate for the movie (default: 5 fps)
+        opath:  Set/creates path to output movie (default: ./)
         movie:  Set output movie name (default: cinema.mp4)
 
 """
@@ -47,16 +47,16 @@ parser = argparse.ArgumentParser(
                     epilog=textwrap.dedent(ep)
                     )
 
-parser.add_argument( "--path", default="./data",
-    help="path to input Cinema database")
-parser.add_argument( "--cdb", default="example_data.cdb",
-    help="input cinema database")
-parser.add_argument( "--frames", default="frames.csv",
-    help="input csv file of frames (images) to be included in the movie; assumed to be in ./ ")
+parser.add_argument( "--cdb", default="./data/example_data.cdb",
+    help="input path and name of cinema database")
+parser.add_argument("--frames", default="frames.csv",
+    help="input path and name of csv file of frames (images) to be included in the movie")
 parser.add_argument( "--FILE", default="FILE",
     help="defines which image column will be used in the movie")
 parser.add_argument( "--fps", default=5.0,
     help="frames per second")
+parser.add_argument("--opath", default=".",
+    help="Ouput path for movie")
 parser.add_argument( "--movie", default="cinema.mp4",
     help="output movie name")
 
@@ -66,15 +66,23 @@ args = parser.parse_args(remaining_argv)
 
 cmovie.core.hello()
 
-# Read in data.csv and the frame csv files as dataframes; validate path and dfs
-pathIn = args.path + '/' + args.cdb + '/'
+# Validate fps
 FILE_choice = args.FILE
 FPS = cmovie.core.checkFPS(args.fps)
 
+# Validate paths to cdb and frames file
+pathIn = args.cdb + '/'
 data_csv_file = pathIn + 'data.csv'
-frames_file = './' + args.frames
-cmovie.core.validateFile(data_csv_file)
-cmovie.core.validateFile(frames_file)
+cmovie.core.validateFile("Cinema database", data_csv_file)
+if args.frames == 'frames.csv':
+    frames_file = os.path.join(args.cdb, args.frames)
+else:
+    frames_file = args.frames
+cmovie.core.validateFile("frames file" , frames_file)
+
+# Make path to move output directory if needed
+os.makedirs(args.opath, exist_ok=True)  # succeeds even if directory exists.
+movie_name = args.opath + "/" + args.movie
 
 dfCDB = pd.read_csv(data_csv_file, sep=',')
 dfFrames = pd.read_csv(frames_file, sep=',')
@@ -82,6 +90,6 @@ cmovie.core.validateDFs(dfCDB, dfFrames, FILE_choice)
 dfMovie = dfFrames.merge(dfCDB, on=list(dfFrames.columns), how='inner')
 
 if len(dfMovie) > 0 :    # Make movie
-    cmovie.core.output_movie( args.movie, FPS, FILE_choice, pathIn, dfMovie)
+    cmovie.core.output_movie( movie_name, FPS, FILE_choice, pathIn, dfMovie)
 else:
     sys.stdout.write ('ERROR No images satisfied the view criteria' )

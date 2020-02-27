@@ -8,10 +8,12 @@ def hello():
     sys.stdout.write ('{}\n'.format("Let's make a Cinema movie") )
 
 ################## Validate path and filename ###############
-def validateFile(file) :
+def validateFile(note, file) :
     if ( not os.path.isfile(file) ) :
         sys.stderr.write ( 'ERROR file does not exist: {}\n'.format(file) )
         sys.exit("Check file path and name.")
+    else :
+        sys.stdout.write ('Using {}: {}\n'.format(note, file ) )
 
 ################## Check and set fps to float ##############
 def checkFPS(fps) :
